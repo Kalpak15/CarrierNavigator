@@ -504,49 +504,6 @@
             </div>
         </div>
         
-        <!-- <h3>🎓 Recommended Courses for Missing Skills</h3>
-        <div class="courses-section">
-            <ul class="course-list">
-                {% for skill, courses in recommended_courses.items() %}
-                <li class="skill-item">
-                    <div class="skill-name">{{ skill }}</div>
-                    <ul>
-                        {% for course in courses %}
-                        <li class="course-item">
-                            {% if course.title %}
-                            <a href="{{ course.url }}" target="_blank" class="course-link">{{ course.title }}</a>
-                            {% else %}
-                            <span class="course-link">{{ course }}</span>
-                            {% endif %}
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </li>
-                {% endfor %}
-            </ul>
-        </div> -->
-        <!-- <h3>🎓 Recommended Courses for Missing Skills</h3>
-        <div class="courses-section">
-            <ul class="course-list">
-                {% for skill, courses in recommended_courses.items() %}
-                <li class="skill-item">
-                    <div class="skill-name">{{ skill }}</div>
-                    <ul>
-                        {% for course in courses %}
-                        <li class="course-item">
-                            {% if course is string %}
-                                <span class="course-link">{{ course }}</span>
-                            {% else %}
-                                <span class="course-link">{{ course }}</span>
-                            {% endif %}
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </li>
-                {% endfor %}
-            </ul>
-        </div> -->
-
         <h3>🎓 Recommended Courses for Missing Skills</h3>
         <div class="courses-section">
             <ul class="course-list">
@@ -554,16 +511,22 @@
                 <li class="skill-item">
                     <div class="skill-name">{{ skill }}</div>
                     <ul>
-                        {% for course in courses %}
-                        <li class="course-item">
-                            <span class="course-link">{{ course }}</span>
-                        </li>
-                        {% endfor %}
+                        {% if courses is string %}
+                            <li class="course-item"><span class="course-link">{{ courses }}</span></li>
+                        {% else %}
+                            {% for course in courses %}
+                            <li class="course-item">
+                                <span class="course-link">{{ course }}</span>
+                            </li>
+                            {% endfor %}
+                        {% endif %}
                     </ul>
                 </li>
                 {% endfor %}
             </ul>
         </div>
+
+
 
         <div class="action-container">
             <a href="{{ url_for('index') }}" class="action-btn">Analyze Another Resume</a>

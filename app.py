@@ -29,13 +29,13 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 tokenizer = RobertaTokenizer.from_pretrained("roberta-base")
 roberta_model = RobertaModel.from_pretrained("roberta-base").to(device)
 
-with open("models/resume_model.pkl", "rb") as f:
+with open("CarrierNavigator/models/resume_model.pkl", "rb") as f:
     model = pickle.load(f)
-with open("models/resume_vectorizer.pkl", "rb") as f:
+with open("CarrierNavigator/models/resume_vectorizer.pkl", "rb") as f:
     vectorizer = pickle.load(f)
 
 # Load the courses from the JSON file
-with open("data/online_courses_dataset.json", "r") as f:
+with open("CarrierNavigator/data/online_courses_dataset.json", "r") as f:
     course_dict = json.load(f)
 
 # ========== Utility Functions ==========
@@ -71,30 +71,26 @@ def match_skills_fuzzy(resume_text, required_skills, threshold=80):
                 break
     return list(set(matched))
 
-def recommend_courses(missing_skills):
-#     # Use the loaded course_dict from the JSON file
-    return {
-        skill: course_dict.get(skill.lower(), ["🔍 Course not found. Search manually."])
-        for skill in missing_skills
-    }
-
-
-# =======
-
-
 # def recommend_courses(missing_skills):
-#     recommendations = {}
+# #     # Use the loaded course_dict from the JSON file
+#     return {
+#         skill: course_dict.get(skill.lower(), ["🔍 Course not found. Search manually."])
+#         for skill in missing_skills
+#     }
 
-#     for skill in missing_skills:
-#         courses = course_dict.get(skill.lower(), [])
-        
-#         # If local JSON doesn't have it or is empty, fetch from YouTube
-#         if not courses or courses == "🔍 Course not found. Search manually.":
-#             courses = fetch_youtube_courses(skill)
-        
-#         recommendations[skill] = courses or ["🔍 No course found."]
-    
-#     return recommendations
+
+def recommend_courses(missing_skills):
+    recommendations = {}
+    for skill in missing_skills:
+        normalized_skill = skill.lower().replace(" ", "")
+        best_match = max((fuzz.partial_ratio(normalized_skill, key) for key in course_dict.keys()), default=0)
+        if best_match > 80:  # Threshold for fuzzy match
+            matched_key = max((key for key in course_dict.keys() if fuzz.partial_ratio(normalized_skill, key) > 80), key=lambda k: fuzz.partial_ratio(normalized_skill, k), default=skill.lower())
+            recommendations[skill] = [course_dict[matched_key]]
+        else:
+            recommendations[skill] = ["🔍 Course not found. Search manually."]
+    return recommendations
+
 
 
 # ========== Routes ==========
