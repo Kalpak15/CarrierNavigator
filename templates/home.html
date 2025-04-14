@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarrierNavigator - Your Career Compass</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: #fff;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 2rem 0;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .slogan {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .main-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+        
+        .options-container {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .option-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .option-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .option-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .option-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .option-description {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        
+        @media (max-width: 768px) {
+            .options-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .option-card {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">🧭 CarrierNavigator</div>
+        <div class="slogan">Navigate Your Career Path With Confidence</div>
+    </div>
+    
+    <div class="main-container">
+        <div class="options-container">
+            <a href="/home" style="text-decoration: none; color: inherit;">
+                <div class="option-card">
+                    <div class="option-icon">👤</div>
+                    <div class="option-title">Job Seeker</div>
+                    <div class="option-description">
+                        Upload your resume, analyze job fit, and get personalized recommendations to boost your career prospects.
+                    </div>
+                </div>
+            </a>
+            
+            <a href="/multi-upload" style="text-decoration: none; color: inherit;">
+                <div class="option-card">
+                    <div class="option-icon">👔</div>
+                    <div class="option-title">HR Professional</div>
+                    <div class="option-description">
+                        Streamline your recruitment process, manage candidates, and find the perfect match for your organization.
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    
+    <div class="footer">
+        © 2025 CarrierNavigator | Your Career Compass
+    </div>
+
+    <script>
+        // Redirect to the resume analyzer page when clicking on the User/Job Seeker card
+        document.querySelector('a[href="/home"]').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '/home';
+        });
+    </script>
+</body>
+</html>

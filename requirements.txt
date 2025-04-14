@@ -1,0 +1,13 @@
+flask
+spacy==3.5.4
+numpy==1.24.4
+torch
+transformers
+scikit-learn
+pandas
+PyPDF2
+python-docx
+tqdm
+waitress
+fuzzywuzzy
+flask-cors

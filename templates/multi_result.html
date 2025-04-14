@@ -1,0 +1,345 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Ranking Results | CarrierNavigator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            width: 100%;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            background: #fff;
+            color: #6a11cb;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .tagline {
+            font-size: 1rem;
+            opacity: 0.9;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 900px;
+            margin: 2rem auto;
+            background-color: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .results-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .results-header .summary {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .results-table {
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        th {
+            background-color: rgba(0, 0, 0, 0.2);
+            color: #fff;
+            font-weight: 600;
+            text-align: left;
+            padding: 1rem;
+            font-size: 1rem;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .rank-cell {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .rank-badge {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1rem;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        tr:nth-child(1) .rank-badge {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #333;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            animation: pulse 2s infinite;
+        }
+
+        tr:nth-child(2) .rank-badge {
+            background: linear-gradient(135deg, #C0C0C0, #A9A9A9);
+            color: #333;
+        }
+
+        tr:nth-child(3) .rank-badge {
+            background: linear-gradient(135deg, #CD7F32, #8B4513);
+            color: #fff;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(255, 215, 0, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
+            }
+        }
+
+        .filename {
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .score-cell {
+            position: relative;
+        }
+
+        .score-bar {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, rgba(46, 191, 145, 0.3) 0%, rgba(46, 191, 145, 0.1) 100%);
+            z-index: 0;
+            width: 0%;
+            animation: growBar 1.5s forwards ease-out;
+        }
+
+        .score-value {
+            position: relative;
+            z-index: 1;
+            font-weight: 600;
+        }
+
+        @keyframes growBar {
+            to {
+                width: var(--score-width);
+            }
+        }
+
+        .back-btn {
+            display: inline-block;
+            background-color: #fff;
+            color: #6a11cb;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .trophy-icon {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 1.5rem;
+            width: 100%;
+            text-align: center;
+            font-size: 0.9rem;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            td, th {
+                padding: 0.75rem 0.5rem;
+            }
+            
+            .filename {
+                max-width: 150px;
+            }
+            
+            .results-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <div class="logo-icon">⭐</div>
+            <div>
+                <div class="logo-text">CarrierNavigator</div>
+                <div class="tagline">Navigate Your Career Path With Confidence</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>🏆 Resume Ranking Results</h1>
+        
+        <div class="results-header">
+            <h2>Candidate Fit Analysis</h2>
+            <div class="summary">Total Resumes Analyzed: <span id="resumeCount">{{ results|length }}</span></div>
+        </div>
+        
+        <div class="results-table">
+            <table>
+                <tr>
+                    <th width="15%">Rank</th>
+                    <th width="50%">Filename</th>
+                    <th width="35%">Final Fit Score (%)</th>
+                </tr>
+                {% for rank, result in results %}
+                <tr style="animation-delay: {{ (loop.index0 * 0.1) }}">
+                    <td>
+                        <div class="rank-cell">
+                            <div class="rank-badge">{{ rank }}</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="filename">{{ result.filename }}</div>
+                    </td>
+                    <td class="score-cell">
+                        <div class="score-bar" style="--score-width: {{ result.final_fit_score }}%"></div>
+                        <div class="score-value">{{ result.final_fit_score }}%</div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        
+        <div style="text-align: center; margin-top: 2rem;">
+            <a href="/multi-upload" class="back-btn">←️ Back to Upload</a>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2025 CarrierNavigator - Navigate Your Career Path With Confidence
+    </footer>
+
+    <script>
+        // Animation for table rows - adds staggered entry
+        document.addEventListener('DOMContentLoaded', function() {
+            const rows = document.querySelectorAll('tr');
+            
+            // Skip the header row
+            for (let i = 1; i < rows.length; i++) {
+                rows[i].style.animationDelay = (i - 1) * 0.15 + 's';
+            }
+        });
+    </script>
+</body>
+</html>

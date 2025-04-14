@@ -1,0 +1,587 @@
+
+<!-- 1This is correct one -->
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Analysis Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+    
+        <h3>Analysis Result</h3>
+        <p><strong>Predicted Job Category:</strong> {{ predicted_category }}</p>
+        <p><strong>Semantic Similarity:</strong> {{ semantic_score }}%</p>
+        <p><strong>Skill Match Score:</strong> {{ skill_match_score }}%</p>
+        <p><strong>Final Fit Score:</strong> {{ final_fit_score }}%</p>
+        <p><strong>Matched Skills:</strong> {{ matched_skills | join(', ') }}</p>
+        <p><strong>Missing Skills:</strong> {{ missing_skills | join(', ') }}</p>
+        
+        <h3>🎓 Recommended Courses for Missing Skills</h3>
+            <ul>
+            {% for skill, courses in recommended_courses.items() %}
+                <li><strong>{{ skill }}</strong>:
+                <ul>
+                    {% for course in courses %}
+                    {% if course.title %}
+                        <li><a href="{{ course.url }}" target="_blank">{{ course.title }}</a></li>
+                    {% else %}
+                        <li>{{ course }}</li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+                </li>
+            {% endfor %}
+            </ul>
+
+
+        <a href="{{ url_for('index') }}">Analyze Another Resume</a>
+    </div>
+</body>
+</html> -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Analysis Result | CarrierNavigator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            width: 100%;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            background: #fff;
+            color: #6a11cb;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .tagline {
+            font-size: 1rem;
+            opacity: 0.9;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 2rem auto;
+            background-color: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1, h2, h3 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin-top: 2rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 25%;
+            width: 50%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+        }
+
+        .score-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .score-card {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+            animation: slideIn 0.8s forwards;
+            opacity: 0;
+        }
+
+        .score-card:hover {
+            transform: translateY(-5px);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .score-card:nth-child(1) { animation-delay: 0.1s; }
+        .score-card:nth-child(2) { animation-delay: 0.3s; }
+        .score-card:nth-child(3) { animation-delay: 0.5s; }
+        .score-card:nth-child(4) { animation-delay: 0.7s; }
+
+        .score-title {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .score-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .category-card {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: fadeIn 1s forwards;
+            animation-delay: 0.2s;
+            opacity: 0;
+        }
+
+        .category-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+        }
+
+        .category-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .skills-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .skills-container {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            animation: fadeIn 1s forwards;
+            animation-delay: 0.5s;
+            opacity: 0;
+        }
+
+        .skills-title {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .matched .skills-title {
+            color: #4ade80;
+        }
+
+        .missing .skills-title {
+            color: #f87171;
+        }
+
+        .skill-tag {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 0.8rem;
+            border-radius: 50px;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            animation: popIn 0.3s forwards;
+            opacity: 0;
+        }
+
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .matched .skill-tag {
+            background-color: rgba(74, 222, 128, 0.2);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+        }
+
+        .missing .skill-tag {
+            background-color: rgba(248, 113, 113, 0.2);
+            border: 1px solid rgba(248, 113, 113, 0.3);
+        }
+
+        .courses-section {
+            margin-top: 2rem;
+            animation: fadeIn 1s forwards;
+            animation-delay: 0.7s;
+            opacity: 0;
+        }
+
+        .course-list {
+            list-style-type: none;
+        }
+
+        .skill-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .skill-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #f59e0b;
+        }
+
+        .course-item {
+            background-color: rgba(255, 255, 255, 0.1);
+            margin-bottom: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .course-item:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+
+        .course-link {
+            color: #fff;
+            text-decoration: none;
+            display: block;
+            position: relative;
+            padding-right: 20px;
+        }
+
+        .course-link::after {
+            content: '→';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .course-link:hover::after {
+            opacity: 1;
+            right: -10px;
+        }
+
+        .action-btn {
+            display: inline-block;
+            background-color: #fff;
+            color: #6a11cb;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .action-container {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .circular-progress {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(
+                #2575fc var(--progress), 
+                rgba(255, 255, 255, 0.1) var(--progress)
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: progressAnimation 1.5s ease-out forwards;
+        }
+
+        .circular-progress::before {
+            content: '';
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 50%;
+        }
+
+        .progress-value {
+            position: relative;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        @keyframes progressAnimation {
+            from {
+                background: conic-gradient(
+                    #2575fc 0%, 
+                    rgba(255, 255, 255, 0.1) 0%
+                );
+            }
+            to {
+                background: conic-gradient(
+                    #2575fc var(--progress), 
+                    rgba(255, 255, 255, 0.1) var(--progress)
+                );
+            }
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 1.5rem;
+            width: 100%;
+            text-align: center;
+            font-size: 0.9rem;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .skills-section,
+            .score-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <div class="logo-icon">⭐</div>
+            <div>
+                <div class="logo-text">CarrierNavigator</div>
+                <div class="tagline">Navigate Your Career Path With Confidence</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>📊 Resume Analysis Results</h1>
+        
+        <div class="category-card">
+            <div class="category-label">PREDICTED JOB CATEGORY</div>
+            <div class="category-value">{{ predicted_category }}</div>
+        </div>
+        
+        <div class="score-cards">
+            <div class="score-card">
+                <div class="score-title">FINAL FIT SCORE</div>
+                <div class="circular-progress" style="--progress: {{ final_fit_score }}%">
+                    <div class="progress-value">{{ final_fit_score }}%</div>
+                </div>
+            </div>
+            <div class="score-card">
+                <div class="score-title">SEMANTIC SIMILARITY</div>
+                <div class="score-value">{{ semantic_score }}%</div>
+            </div>
+            <div class="score-card">
+                <div class="score-title">SKILL MATCH SCORE</div>
+                <div class="score-value">{{ skill_match_score }}%</div>
+            </div>
+        </div>
+        
+        <div class="skills-section">
+            <div class="skills-container matched">
+                <div class="skills-title">✓ Matched Skills</div>
+                {% for skill in matched_skills %}
+                    <span class="skill-tag" style="animation-delay: {{ loop.index0 * 0.1 }}">{{ skill }}</span>
+                {% endfor %}
+            </div>
+            
+            <div class="skills-container missing">
+                <div class="skills-title">✗ Missing Skills</div>
+                {% for skill in missing_skills %}
+                    <span class="skill-tag" style="animation-delay: {{ loop.index0 * 0.1 }}">{{ skill }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- <h3>🎓 Recommended Courses for Missing Skills</h3>
+        <div class="courses-section">
+            <ul class="course-list">
+                {% for skill, courses in recommended_courses.items() %}
+                <li class="skill-item">
+                    <div class="skill-name">{{ skill }}</div>
+                    <ul>
+                        {% for course in courses %}
+                        <li class="course-item">
+                            {% if course.title %}
+                            <a href="{{ course.url }}" target="_blank" class="course-link">{{ course.title }}</a>
+                            {% else %}
+                            <span class="course-link">{{ course }}</span>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% endfor %}
+            </ul>
+        </div> -->
+        <!-- <h3>🎓 Recommended Courses for Missing Skills</h3>
+        <div class="courses-section">
+            <ul class="course-list">
+                {% for skill, courses in recommended_courses.items() %}
+                <li class="skill-item">
+                    <div class="skill-name">{{ skill }}</div>
+                    <ul>
+                        {% for course in courses %}
+                        <li class="course-item">
+                            {% if course is string %}
+                                <span class="course-link">{{ course }}</span>
+                            {% else %}
+                                <span class="course-link">{{ course }}</span>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% endfor %}
+            </ul>
+        </div> -->
+
+        <h3>🎓 Recommended Courses for Missing Skills</h3>
+        <div class="courses-section">
+            <ul class="course-list">
+                {% for skill, courses in recommended_courses.items() %}
+                <li class="skill-item">
+                    <div class="skill-name">{{ skill }}</div>
+                    <ul>
+                        {% for course in courses %}
+                        <li class="course-item">
+                            <span class="course-link">{{ course }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="action-container">
+            <a href="{{ url_for('index') }}" class="action-btn">Analyze Another Resume</a>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2025 CarrierNavigator - Navigate Your Career Path With Confidence
+    </footer>
+
+    <script>
+        // Add delay to skill tags for staggered animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const skillTags = document.querySelectorAll('.skill-tag');
+            skillTags.forEach((tag, index) => {
+                tag.style.animationDelay = (index * 0.1) + 's';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Resume Fit Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Resume Fit Analyzer</h1>
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <label for="resume">📄 Upload Resume (PDF or DOCX):</label>
+            <input type="file" name="resume" accept=".pdf, .docx" required>
+
+            <label for="job_description">📝 Enter Job Description:</label>
+            <textarea name="job_description" rows="5" required></textarea>
+
+            <label for="required_skills">💡 Enter Required Skills (comma separated):</label>
+            <input type="text" name="required_skills" placeholder="e.g. Python, Machine Learning, SQL" required>
+
+            <button type="submit">Analyze</button>
+        </form>
+    </div>
+</body>
+</html> -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Fit Analyzer | CarrierNavigator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            width: 100%;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            background: #fff;
+            color: #6a11cb;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .tagline {
+            font-size: 1rem;
+            opacity: 0.9;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 2rem auto;
+            background-color: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        input[type="file"] {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 0.8rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            cursor: pointer;
+        }
+
+        input[type="text"], 
+        textarea {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            font-size: 1rem;
+            resize: vertical;
+        }
+
+        textarea {
+            min-height: 120px;
+        }
+
+        input::placeholder, 
+        textarea::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        button {
+            margin-top: 2rem;
+            background: #fff;
+            color: #6a11cb;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .feature {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 1.5rem;
+            width: 100%;
+            text-align: center;
+            font-size: 0.9rem;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <div class="logo-icon">⭐</div>
+            <div>
+                <div class="logo-text">CarrierNavigator</div>
+                <div class="tagline">Navigate Your Career Path With Confidence</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>🔍 Resume Fit Analyzer</h1>
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <label for="resume">📄 Upload Resume (PDF or DOCX):</label>
+            <input type="file" name="resume" accept=".pdf, .docx" required>
+
+            <label for="job_description">📝 Enter Job Description:</label>
+            <textarea name="job_description" rows="5" placeholder="Paste the full job description here..." required></textarea>
+
+            <label for="required_skills">💡 Enter Required Skills (comma separated):</label>
+            <input type="text" name="required_skills" placeholder="e.g. Python, Machine Learning, SQL" required>
+
+            <button type="submit">Analyze My Resume Match <span>➡️</span></button>
+        </form>
+
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">📊</div>
+                <h3>Match Score</h3>
+                <p>Get detailed analysis of how well your resume matches the job requirements</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📝</div>
+                <h3>Improvement Tips</h3>
+                <p>Receive personalized suggestions to enhance your resume for better fit</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2025 CarrierNavigator - Navigate Your Career Path With Confidence
+    </footer>
+</body>
+</html>

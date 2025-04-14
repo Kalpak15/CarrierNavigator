@@ -1,0 +1,373 @@
+
+<!-- 11This one is correct -->
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Multi Resume Upload</title>
+</head>
+<body>
+    <h1>Upload Multiple Resumes</h1>
+    <form method="post" enctype="multipart/form-data">
+        <label for="job_description">Job Description:</label><br>
+        <textarea name="job_description" rows="5" cols="50" required></textarea><br><br>
+
+        <label for="required_skills">Required Skills (comma-separated):</label><br>
+        <input type="text" name="required_skills" required><br><br>
+
+        <label for="resumes">Upload Resumes (PDF or DOCX):</label><br>
+        <input type="file" name="resumes" multiple accept=".pdf,.docx" required><br><br>
+
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi Resume Upload | CarrierNavigator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            width: 100%;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            background: #fff;
+            color: #6a11cb;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .tagline {
+            font-size: 1rem;
+            opacity: 0.9;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 2rem auto;
+            background-color: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        input[type="file"] {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 0.8rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        input[type="text"], 
+        textarea {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            font-size: 1rem;
+            resize: vertical;
+            width: 100%;
+        }
+
+        textarea {
+            min-height: 120px;
+        }
+
+        input::placeholder, 
+        textarea::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        input[type="submit"] {
+            margin-top: 2rem;
+            background: #fff;
+            color: #6a11cb;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        input[type="submit"]:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .upload-area {
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: rgba(255, 255, 255, 0.6);
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .upload-text {
+            margin-bottom: 1rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .feature {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 1.5rem;
+            width: 100%;
+            text-align: center;
+            font-size: 0.9rem;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        /* File list styling */
+        .file-list {
+            margin-top: 1rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 0.5rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .file-name {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @media (max-width: 768px) {
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <div class="logo-icon">⭐</div>
+            <div>
+                <div class="logo-text">CarrierNavigator</div>
+                <div class="tagline">Navigate Your Career Path With Confidence</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>📋 Multiple Resume Analysis</h1>
+        <form method="post" enctype="multipart/form-data" id="uploadForm">
+            <label for="job_description">📝 Job Description:</label>
+            <textarea name="job_description" id="job_description" rows="5" placeholder="Paste the full job description here..." required></textarea>
+
+            <label for="required_skills">💡 Required Skills (comma-separated):</label>
+            <input type="text" name="required_skills" id="required_skills" placeholder="e.g. Python, Machine Learning, SQL" required>
+
+            <label for="resumes">📄 Upload Resumes (PDF or DOCX):</label>
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📁</div>
+                <p class="upload-text">Drag & drop multiple resumes or click to browse</p>
+                <input type="file" name="resumes" id="resumes" class="file-input" multiple accept=".pdf,.docx" required>
+            </div>
+            
+            <div class="file-list" id="fileList" style="display: none;">
+                <!-- Selected files will appear here -->
+            </div>
+
+            <input type="submit" value="Analyze All Resumes">
+        </form>
+
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">🔄</div>
+                <h3>Batch Processing</h3>
+                <p>Compare multiple resumes against the same job requirements at once</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📊</div>
+                <h3>Comparative Analysis</h3>
+                <p>See which candidates best match your position requirements</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2025 CarrierNavigator - Navigate Your Career Path With Confidence
+    </footer>
+
+    <script>
+        // Make the upload area interactive
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('resumes');
+        const fileList = document.getElementById('fileList');
+        
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = 'rgba(255, 255, 255, 0.8)';
+            uploadArea.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+            uploadArea.style.backgroundColor = 'transparent';
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileInput.files = e.dataTransfer.files;
+            updateFileList();
+            uploadArea.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+            uploadArea.style.backgroundColor = 'transparent';
+        });
+        
+        fileInput.addEventListener('change', updateFileList);
+        
+        function updateFileList() {
+            if (fileInput.files.length > 0) {
+                fileList.style.display = 'block';
+                fileList.innerHTML = '';
+                
+                Array.from(fileInput.files).forEach(file => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-item';
+                    fileItem.innerHTML = `
+                        <span class="file-name">${file.name}</span>
+                        <span>${(file.size / 1024).toFixed(1)} KB</span>
+                    `;
+                    fileList.appendChild(fileItem);
+                });
+            } else {
+                fileList.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
