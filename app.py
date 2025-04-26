@@ -98,7 +98,7 @@ def recommend_courses(missing_skills):
 
 
 # def fetch_youtube_courses(skill, max_results=2):
-#     search_url = "https://www.googleapis.com/youtube/v3/search"
+    # search_url = "https://www.googleapis.com/youtube/v3/search"
 #     params = {
 #         "part": "snippet",
 #         "q": f"{skill} tutorial",
