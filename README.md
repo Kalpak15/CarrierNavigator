@@ -81,7 +81,7 @@ Before running Career Navigator, ensure you have:
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/resumeforge.git
+   git clone https://github.com/Kalpak15/ResumeForge.git
    cd resumeforge
    ```
 
